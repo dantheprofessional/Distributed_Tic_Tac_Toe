@@ -1,54 +1,33 @@
-const cells = document.querySelectorAll('[data-cell]');
-const winningCombinations = [
-
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-
-];
 
 
-let currentPlayer = 'X';
+let gameId;
+const cells = document.querySelectorAll('.cell');
+
+//Create a new game
+fetch('/game/create', { method: 'POST'})
+    .then(Response => Response.json())
+    .then(data => {
+        gameId = data.id
+    }); 
 
 cells.forEach(cell => {
-    cell.addEventListener('click', handleClick, { once: true });
-});
+    cell.addEventListener('click', () => {
+        const cellIndex = parseInt(cell.dataset.cell);
+        const row = Math.floor(cellIndex / 3);
+        const col = cellIndex % 3;
 
-function handleClick(e) {
-    const cell = e.target;
-    placeMark(cell, currentPlayer);
-    if (checkWin(currentPlayer)){
-        alert(`${currentPlayer} wins!`);
-    } else if (isDraw())  {
-        alert(`Draw!`);
-    } else {
-        switchPlayer();
-    }
-}
-
-function placeMark(cell, player) {
-    cell.textContent = player;
-}
-
-function switchPlayer() {
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-}
-
-function checkWin(player){
-    return winningCombinations.some(combination => {
-        return combination.every(index => {
-            return cells[index].textContent === player;
-        });
+        fetch(`/game/move/${gameId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ row, col})
+  
+       })
+       .then(response => response.json())
+       .then(game => {
+        cell.textContent = game.currentPlayer === 'X' ? 'O' : 'X';
+        if (game.gameState !== 'IN_PROGRESS') {
+            alert(game.gameState === 'DRAW' ? 'Draw!' : `${game.currentPlayer} wins!`);
+        }
+       });
     });
-}
-
-function isDraw() {
-    return [...cells].every(cell => {
-        return cell.textContent === 'X' || cell.textContent === 'O';
-    });
-}
+});    
