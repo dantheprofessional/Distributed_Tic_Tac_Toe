@@ -1,10 +1,13 @@
-package com.com.java.model;
+package com.javamaster.model;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
-@Ketter
+@Getter 
 public enum TicTacToe {
-    X,O;
+    X(value:1),O(value:2);
 
     private Integer value
    

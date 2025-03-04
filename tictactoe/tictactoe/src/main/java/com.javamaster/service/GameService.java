@@ -67,13 +67,39 @@ public class GameService {
         checkWinner(game.getBoard(), TicTacToe.X);
         checkWinner(game.getBoard(), TicTacToe.O);
 
+        GameStorage.getInstance.setGame(game);
+
 
         return game;
 
-        private Boolean checkWinner(int[][] boardc, TicTacToe o) {
+        private Boolean checkWinner(int[][] board, TicTacToe ticTacToe) {
+           int [] boardArray =  new int[9];
+           int counterIndex = 0;
+            for(int i=0; i<board.length; i++){
+                if(int j=0; j<board[i].length; j++){
+                    boardArray[counterIndex] = board[i][j];
+                    counterIndex++;
+                }
+            }
 
+            
         }
-
+           int [][] winCombinations = {{0, 1, 2}, 
+           {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7},
+           {2, 5, 8}, {0, 4, 8}, {2,4,6}        
+        };
+        for(int i=0; i<winCombinations.length; i++){
+            int counter = 0;
+            for(int j=0; j<winCombinations[i].length; j++){
+                if(boardArray[winCombinations[i][j]] == ticTacToe.getValue()){
+                    counter++;
+                    if(counter==3){
+                        returns true;
+                    }
+                } 
+            }
+        }
+        return false;
     }
 
 }
