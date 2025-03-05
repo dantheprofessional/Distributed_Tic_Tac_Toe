@@ -5,10 +5,8 @@ import lombok.Data;
 
 @Data
 public class ConnectRequest {
-
     private Player player;
     private String gameId;
-
 
     /**
      * @return Player return the player

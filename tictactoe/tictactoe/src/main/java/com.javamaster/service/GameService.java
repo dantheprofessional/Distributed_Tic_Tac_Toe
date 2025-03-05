@@ -1,16 +1,20 @@
 package com.javamaster.service;
-import com.javamaster.model.*;
 import com.javamaster.storage.GameStorage;
 import com.javamaster.model.Game;
 import com.javamaster.model.GameStatus;
 import com.javamaster.model.Player;
+
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
+
 import com.javamaster.exception.InvalidParamException;
 import com.javamaster.exception.InvalidGameException;
+import com.javamaster.exception.NotFoundException;
 import com.javamaster.model.GamePlay;
-
+import com.javamaster.model.TicTacToe;
 
 @Service
 @AllArgsConstructor
@@ -49,7 +53,8 @@ public class GameService {
     public Game connectToRandomGame(Player player2) throws NotFoundException {
          Game game = GameStorage.getInstance().getGames().values().stream()
          .filter(it -> it.getStatus().equals(GameStatus.NEW))
-         .findFirst().orElseThrow(()-> new NotFoundException("Game not found")); 
+         .findFirst()
+         .orElseThrow(()-> new NotFoundException("Game not found")); 
         game.setPlayer2(player2);
         game.setStatus(GameStatus.IN_PROGRESS);
         GameStorage.getInstance().setGame(game);
@@ -57,14 +62,14 @@ public class GameService {
 
     }
 
-    public Game gamePlay(GamePlay gamePlay){
+    public Game gamePlay(GamePlay gamePlay) throws NotFoundException, InvalidGameException{
 
         if(GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())){
             throw new NotFoundException("Game not found");
         }
 
         Game game = GameStorage.getInstance().getGames().get(gamePlay.getGameId());
-        if(game.getStatus().equals(FINISHED)){
+        if(game.getStatus().equals(GameStatus.FINISHED)){
             throw new InvalidGameException("Game is already finished");
         }
 
@@ -74,7 +79,7 @@ public class GameService {
         checkWinner(game.getBoard(), TicTacToe.X);
         checkWinner(game.getBoard(), TicTacToe.O);
 
-        GameStorage.getInstance.setGame(game);
+        GameStorage.getInstance().setGame(game);
 
 
         return game; }
