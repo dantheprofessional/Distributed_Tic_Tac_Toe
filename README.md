@@ -6,6 +6,7 @@ Put your name in the second tab press Connect to a Random game.
 Alternate with tabs as you play the tic tac toe game.
 
 Improvents I can make
+Fix Bugs
 Change functionality so two computers communicated with each other
 Organize into microservices possibly with docker and kubernetes 
 Testing Code Quality Documentation
